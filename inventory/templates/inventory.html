@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}
+List 
+{% endblock title %}
+
+{% block content %}
+
+
+      <div class="row">
+        <div class="col-md-12">
+          <!-- messages here -->
+          <div class="container">
+            <!-- block content -->
+            <div class="row" style="color: #4e4e4e; font-style: bold; font-size: 3rem; ">
+              <div class="col-md-8">Inventory List</div>
+              <div class="col-md-4">
+                <div style="float:right;"> <a class="btn btn-success" href="{% url 'create_stock' %}">Add New Stock</a> </div>
+              </div>
+            </div>
+
+            <div style="border-bottom: 1px solid white;"></div>
+
+            <br>
+
+            <table class="table table-css table-bordered table-hover">
+
+<!-- Search -->
+              <form method="get">
+                <div class="input-group search">
+                  <!-- <input type="search" class="form-control textinput" placeholder="Search by stock name"> -->
+                  {% render_field filter.form.name class="form-control textinput" placeholder="Search by stock name" %}
+                  <div class="input-group-append">
+                    <button type="submit" class="btn btn-pink"> Search </button>
+                  </div>
+                </div>
+              </form>
+
+              <br>
+{% if stocks %}
+              <thead class="thead-dark align-middle">
+                <tr>
+                  <th>ID</th>
+                  <th>Stock Name</th>
+                  <th>Current Stock in Inventory</th>
+                  <th>Created At</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+{% for stock in stocks %}
+                <tr>
+                  <td>
+                    <p>{{ stock.id|truncatechars:15 }}</p>
+                  </td>
+                  <td>
+                    <p>{{ stock.name|title }}</p>
+                  </td>
+                  <td class="align-middle">{{ stock.quantity }}</td>
+                  <td class="align-middle">{{ stock.date|date:"d ,m , Y" }}</td>
+                  <td class="align-middle">
+                    <a href="{% url 'update_stock' stock.pk %}" class="btn btn-info btn-sm">Edit Details</a>
+                    <a href="{% url 'delete_stock' stock.pk %}" class="btn btn-danger btn-sm"> Delete Stock </a>
+                  </td>
+                </tr>
+{% endfor %}
+              </tbody>
+
+            </table>
+{% if is_paginated %}
+{%if page_obj.has_previous %}
+            <div class="align-middle">
+              <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+              <a class="btn btn-outline-info mb-4" href="?page={{page_obj.previous_page_number}}">Previous</a>
+              {%endif%}
+              {%for n in page_obj.paginator.page_range %}
+              {% if page_obj.number == n %}
+              <a class="btn btn-info mb-4" href="?page={{ n }}">{{ n }}</a>
+              {% else %}
+              <a class="btn btn-outline-info mb-4" href="?page={{ n }}">{{ n }}</a>
+              {% endif %}
+              {% endfor %}
+              {%if page_obj.has_next %}
+              
+              <a class="btn btn-outline-info mb-4" href="?page={{page_obj.next_page_number}}">Next</a>
+              
+              {%endif%}
+              <a class="btn btn-outline-info mb-4" href="?page={{page_obj.paginator.num_pages}}">Last</a>
+{% endif %}
+            </div>
+{% else %}
+
+            <br><br><br><br><br><br><br><br>
+            <div style="color: #575757; font-style: bold; font-size: 1.5rem; text-align: center;">The records are empty.
+              Please try
+              adding some.</div>
+              {% endif %}
+
+          </div>
+        </div>
+        <br>
+
+      </div>
+
+{% endblock content %}

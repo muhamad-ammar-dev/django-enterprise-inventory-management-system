@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ supplier.name|title }}'s - Supplier Details
+{% endblock title %}
+
+{% block content %}
+
+            <div class="content-section">
+                <div class="media"><!-- Log on to codeastro.com for more projects -->
+                    <div class="media-body">
+                        <h2 style="color:#575757;" class="account-heading">&nbsp;{{ supplier.name|title }}</h2>
+                        <a href="{% url 'update_supplier' supplier.pk %}" class="btn btn-info" style="float: right;">Edit Details</a>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="fal">
+                                    <b>Contact &nbsp; &nbsp;&nbsp; :</b> {{ supplier.phone }}<br>
+                                    <b>Email Id &nbsp;&nbsp;&nbsp;&nbsp; :</b> {{ supplier.email }}<br>
+                                    <b>GSTIN No &nbsp; :</b> {{ supplier.gstn }}<br>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="fal">
+                                    <b>Address:</b> <br> {{ supplier.address }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-css table-hover table-bordered">
+                
+                <br>
+                
+                <thead class="thead-dark align-middle">
+                    {% if bills %}
+                    <tr>
+
+                        <th width="10%">Bill No.</th>
+                        <th width="15%">Stocks</th>
+                        <th width="15%">Quantity</th>
+                        <th width="15%">Total Purchased Price</th>
+                        <th width="15%">Purchased Date</th>
+                        <th width="30%">Actions</th>
+                    </tr><!-- Log on to codeastro.com for more projects -->
+                </thead>
+              
+                <tbody>
+                    {% for p in bills %}
+                    <tr>
+                        <td class="align-middle"> <p>{{ p.billno }} </p> </td>
+                        <td class="align-middle">{%for i in p.get_items_list%}{{ i.stock.name }}<br>{%endfor%}</td>
+                        <td class="align-middle">{%for i in p.get_items_list%}{{ i.quantity }}<br>{%endfor%}</td>
+                        <td class="align-middle">${{ p.get_total_price }}</td>
+                        <td class="align-middle">{{ p.time.date }}</td>
+                        <td class="align-middle"> <a href="{% url 'purchase_bill' p.billno %}" class="btn btn-secondary">View Bill</a> <a href="{% url 'purchase_delete' p.billno %}" class="btn btn-danger">Delete Bill</a> </td>
+                    </tr>
+                    {%endfor%}
+                 {% endif %}   
+                </tbody>
+
+            </table>
+
+            <div class="align-middle">
+            {% if bills.has_other_pages %}
+              {% if bills.has_previous %}
+              <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+              <a class="btn btn-outline-info mb-4" href="?page={{bills.previous_page_number}}">Previous</a>
+              {% endif %}
+              {%for n in bills.paginator.page_range %}
+              {% if bills.number == n %}
+              <a class="btn btn-info mb-4" href="?page={{ n }}">{{ n }}</a>
+              {% else %}
+              <a class="btn btn-outline-info mb-4" href="?page={{ n }}">{{ n }}</a>
+              {% endif %}
+              {% endfor %}
+              {%if bills.has_next %}
+              
+              <a class="btn btn-outline-info mb-4" href="?page={{bills.next_page_number}}">Next</a>
+              
+              {%endif%}
+              <a class="btn btn-outline-info mb-4" href="?page={{bills.paginator.num_pages}}">Last</a>
+{% endif %}
+            </div>
+  {% endblock content %}        
