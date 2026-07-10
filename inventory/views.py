@@ -13,7 +13,7 @@ class StockListView(FilterView):
     filterset_class = StockFilter
     template_name = 'inventory.html'
     context_object_name = 'stocks'
-    paginate_by = 1
+    paginate_by = 10
 
 class CreateStock(SuccessMessageMixin, generic.CreateView):
     model = Stock
