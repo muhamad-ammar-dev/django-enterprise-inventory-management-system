@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Sales List
+{% endblock title %}
+
+{% block content %}
+
+            <div class="row" style="color: #575757; font-style: bold; font-size: 3rem;">
+                <div class="col-md-8">Sales List</div>
+                <div class="col-md-4">               
+                    <div style="float:right;"> <a class="btn btn-success" href="{% url 'new_sale' %}">New Outgoing Stock</a> </div>
+                </div>
+            </div>
+            
+            <br>
+{% if bills %}
+            <table class="table table-css table-bordered table-hover"> 
+                    
+                <thead class="thead-dark align-middle">
+                    <tr>
+                        <th width="10%">Bill No.</th>
+                        <th width="15%">Customer</th>
+                        <th width="15%">Stocks Sold</th>
+                        <th width="10%">Quantity Sold</th>
+                        <th width="10%">Total Sold Price</th>
+                        <th width="15%">Date</th>
+                        <th width="25%">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                  {% for sale in bills %}
+                    <tr>
+                        <td class="align-middle"> <p>{{sale.billno|truncatechars:15}} </p> </td>
+                        <td class=""> {{sale.name|title}} <br> <small style="color: #909494">Phone No : {{sale.phone}}</small> </td>
+                        <td class="align-middle">{% for item in sale.get_items_list %}{{item.stock.name}}<br>{% endfor %}  </td>
+                        <td class="align-middle">{% for item in sale.get_items_list %}{{item.quantity}}<br>{% endfor %} </td>     
+                        <td class="align-middle">${{sale.get_total_price}}</td>
+                        <td class="align-middle">{{sale.time.date}}</td>
+                        <td class="align-middle"> <a href="{% url 'sale_bill' sale.billno %}" class="btn btn-secondary btn-sm">View Bill</a> <a href="{% url 'delete_sale' sale.pk %}" class="btn btn-danger btn-sm">Delete Bill</a> </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
+
+            </table>
+
+             <div class="align-middle">
+                {% if is_paginated %}
+                
+              {% if page_obj.has_previous %}
+              <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+              <a class="btn btn-outline-info mb-4" href="?page={{page_obj.previous_page_number}}">Previous</a>
+              {%endif%}
+              
+              {%for n in page_obj.paginator.page_range %}
+              {% if page_obj.number == n %}
+              <a class="btn btn-info mb-4" href="?page={{ n }}">{{ n }}</a>
+              {% else %}
+              <a class="btn btn-outline-info mb-4" href="?page={{ n }}">{{ n }}</a>
+              {% endif %}
+              {% endfor %}
+              {%if page_obj.has_next %}
+              
+              <a class="btn btn-outline-info mb-4" href="?page={{page_obj.next_page_number}}">Next</a>
+              
+              {%endif%}
+              <a class="btn btn-outline-info mb-4" href="?page={{page_obj.paginator.num_pages}}">Last</a>
+{% endif %}
+            </div>
+            
+{%else%}
+            <br><br><br><br><br><br><br><br>
+            <div style="color: #575757; font-style: bold; font-size: 1.5rem; text-align: center;">The records are empty. Please try adding some.</div>
+{%endif%}
+{% endblock content %}
